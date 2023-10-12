@@ -1,10 +1,15 @@
 package UI;
 import java.awt.Button;
+import java.awt.Canvas;
 import java.awt.Checkbox;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Label;
 import java.awt.Menu;
@@ -13,6 +18,7 @@ import java.awt.MenuItem;
 import java.awt.Panel;
 import java.awt.TextArea;
 import java.awt.TextField;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -20,8 +26,13 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 import impl.Characters;
 
@@ -29,6 +40,10 @@ import impl.ArtifactManager;
 import impl.Artifacts;
 import impl.BonusManager;
 import impl.Calculator;
+import impl.BonusManager;
+
+import impl.ArtifactManager;
+
 import java.awt.GridBagConstraints;;
 
 public class UIFrame{
@@ -43,12 +58,30 @@ public class UIFrame{
             this.connectPanel = CNP;
         }
     }
-
+    
+    class ImageCanvas extends Panel{
+        private BufferedImage img;
+        
+        public ImageCanvas(){
+            try {
+                img = ImageIO.read(new File("pimon.jpg"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    
+        @Override
+        public void paint(Graphics g){
+            super.paint(g);
+            g.drawImage(img,0,-220,680,780, this);
+        }
+    }
+    
     //储存当前对应角色
     public Characters chara;
 
     //新建frame
-    private Frame fr = new Frame("角色面板");
+    private Frame fr = new Frame();
 
     private Panel condition = new Panel();
 
@@ -57,6 +90,9 @@ public class UIFrame{
 
     //用于存放圣遗物的类型
     private Panel artifact = new Panel();
+
+    //设置用于存放伤害的panel
+    private Panel dmgPanel = new Panel();
 
     //设置布局
     private GridBagLayout gbl = new GridBagLayout();
@@ -73,6 +109,9 @@ public class UIFrame{
     //Bonus的容器格式设置
     private GridBagConstraints gbcb = new GridBagConstraints();
 
+    //伤害的容器格式设置
+    private GridBagConstraints gbcd = new GridBagConstraints();
+
     //设置圣遗物容器
     private GridBagConstraints gbca = new GridBagConstraints();
 
@@ -82,13 +121,15 @@ public class UIFrame{
 
     private Panel frArt = new Panel();
 
-    private Panel BonusPanel;
+    private ImageCanvas BonusPanel;
 
     private BonusManager bonusManager;
 
     private ArtifactManager manager;
 
     private TextField currentDmgField;
+
+    private Color transp = new Color(255, 255, 255, 64);
 
 
     private void addMain(Component comp){
@@ -111,9 +152,13 @@ public class UIFrame{
         gbl.setConstraints(comp, gbcb);
         BonusPanel.add(comp);
     }
+    public void adddmg(Component comp){
+        gbl.setConstraints(comp, gbcd);
+        dmgPanel.add(comp);
+    }
 
     public void renewCharaCondition(ArtifactManager manager, BonusManager bmanager){
-        gbcALL.fill = GridBagConstraints.HORIZONTAL;
+        gbcALL.fill = GridBagConstraints.BOTH;
 
         //先重置角色数值
         chara.reset();
@@ -132,9 +177,8 @@ public class UIFrame{
         charaCondition(chara);
 
         gbcALL.gridx = 0;
-        gbcALL.gridy = 1;
+        gbcALL.gridy = 0;
         gbcALL.gridheight = 1;
-        gbcALL.weightx = 1;
         addMain(condition);
         condition.validate();
         fr.validate();
@@ -157,6 +201,7 @@ public class UIFrame{
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         TextField text = new TextField(chara.name);
         text.setEditable(false);
+        text.setBackground(transp);
         addcomp(text);
 
 
@@ -238,28 +283,29 @@ public class UIFrame{
 
     public void init(Characters chara) throws IOException{
         this.chara = chara;
+        //设置布局
+        fr.setLayout(gbl);
+
 
         manager = new ArtifactManager();
         //设置菜单栏
         menu(chara);
 
-        //设置布局
-        fr.setLayout(gbl);
+        
 
         //设置角色状态栏
         condition.setLayout(gbl);
         charaCondition(chara);
         gbcALL.gridx = 0;
-        gbcALL.gridy = 1;
+        gbcALL.gridy = 0;
         gbcALL.gridheight = 1;
-        gbcALL.weightx = 1;
+
         addMain(condition);
 
         //设置buff栏
         gbcALL.gridx = 0;
-        gbcALL.gridy = 2;
+        gbcALL.gridy = 1;
         gbcALL.gridheight = 1;
-        gbcALL.weightx = 1;
         BonusManager b = new BonusManager();
         bonusManager = b;
         Panel bonusPanel =  BonusUI(b);
@@ -278,7 +324,6 @@ public class UIFrame{
         };
 
         fr.addWindowListener(windowListener);
-
 
         //test
 
@@ -305,10 +350,9 @@ public class UIFrame{
                 try {
                     if(!ifOpen_art){
                         frArt = ArtifactUI(chara);
-                        gbcALL.gridx = 2;
-                        gbcALL.gridy = 1;
-                        gbcALL.gridheight = 14;
-                        gbcALL.weightx = 2;
+                        gbcALL.gridx = 1;
+                        gbcALL.gridy = 0;
+                        gbcALL.gridheight = 3;
                         addMain(frArt);
                         fr.validate();
                         fr.pack();
@@ -600,8 +644,10 @@ public class UIFrame{
     }
 
     public Panel BonusUI(BonusManager bmanager){
-        BonusPanel = new Panel();
+        BonusPanel = new ImageCanvas();
         BonusPanel.setLayout(gbl);
+        BonusPanel.setBackground(transp);
+
         gbcb.fill = GridBagConstraints.HORIZONTAL;
 
         ItemListener itemListener = new ItemListener() {
@@ -618,11 +664,13 @@ public class UIFrame{
         //设置共鸣效果
         Label lb1 = new Label("共鸣加成：");
         lb1.setFont(new Font("b", 2, 12));
+        lb1.setBackground(null);
         addbon(lb1);
         for(int i = 0; i < bmanager.bonusListTeam.length; i++){
             gbcb.gridy = i+1;
             Checkbox cb = new Checkbox(bmanager.bonusListTeam[i]);
             cb.addItemListener(itemListener);
+            cb.setBackground(null);
             addbon(cb);
         }
         
@@ -638,6 +686,7 @@ public class UIFrame{
             gbcb.gridy = i+1;
             Checkbox cb = new Checkbox(bmanager.bonusTeamSkills[i]);
             cb.addItemListener(itemListener);
+            cb.setBackground(null);
             addbon(cb);
         }
 
@@ -646,12 +695,13 @@ public class UIFrame{
         gbcb.gridx = 4;
         gbcb.gridy = 0;
         Label lb4 = new Label("角色/武器技能");
-        lb2.setFont(new Font("b", 2, 12));
+        lb4.setFont(new Font("b", 2, 12));
         addbon(lb4);
         for(int i = 0; i < bmanager.charaSkills.length; i++){
             gbcb.gridy = i+1;
             Checkbox cb = new Checkbox(bmanager.charaSkills[i]);
             cb.addItemListener(itemListener);
+            cb.setBackground(null);
             addbon(cb);
         }
 
@@ -665,6 +715,7 @@ public class UIFrame{
             gbcb.gridy = i+1;
             Checkbox cb = new Checkbox(bmanager.foods[i]);
             cb.addItemListener(itemListener);
+            cb.setBackground(null);
             addbon(cb);
         }
 
@@ -678,6 +729,7 @@ public class UIFrame{
             gbcb.gridy = i+1;
             Checkbox cb = new Checkbox(bmanager.artifact[i]);
             cb.addItemListener(itemListener);
+            cb.setBackground(null);
             addbon(cb);
         }
 
@@ -687,18 +739,23 @@ public class UIFrame{
         Label lb3 = new Label("队友参数");
         lb3.setFont(new Font("b", 2, 12));
         addbon(lb3);
-        Label[] lb = new Label[4];
+        Label[] lb = new Label[6];
         lb[0] = new Label("砂糖精通");
         lb[1] = new Label( "万叶精通");
         lb[2] = new Label("班尼特攻击力");
         lb[3] = new Label("反应系数");
 
+        lb[4] = new Label("敌人等级");
+        lb[5] = new Label("敌人抗性");
 
-        TextField[] enterTexts = new TextField[4];
+
+        TextField[] enterTexts = new TextField[6];
         enterTexts[0] = new TextField("917");
         enterTexts[1] = new TextField("974");
         enterTexts[2] = new TextField("799");
         enterTexts[3] = new TextField("1.5");
+        enterTexts[4] = new TextField("90");
+        enterTexts[5] = new TextField("0.1");
 
 
         for(int i = 0; i<3; i++){
@@ -709,16 +766,27 @@ public class UIFrame{
             addbon(enterTexts[i]);
         }
 
-        //反应系数框
-        gbcb.gridy = 9;
+        //反应系数框、敌人等级、敌人抗性
+        gbcb.gridy = 8;
         gbcb.gridx = 2;
         addbon(lb[3]);
         gbcb.gridx = 3;
         addbon(enterTexts[3]);
 
+        gbcb.gridy = 9;
+        gbcb.gridx = 2;
+        addbon(lb[4]);
+        gbcb.gridx = 3;
+        addbon(enterTexts[4]);
+
+        gbcb.gridy = 10;
+        gbcb.gridx = 2;
+        addbon(lb[5]);
+        gbcb.gridx = 3;
+        addbon(enterTexts[5]);
 
 
-        //设置点击按钮更新
+        //设置点击按钮更新出伤害
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
@@ -726,23 +794,18 @@ public class UIFrame{
                 String KasuhaEM = enterTexts[1].getText();
                 String BannitATK = enterTexts[2].getText();
                 String reac = enterTexts[3].getText();
+                String Level = enterTexts[4].getText();
+                String Resis = enterTexts[5].getText();
 
                 bmanager.SucroseEM =  Integer.parseInt(sucroseEM);
                 bmanager.KasuhaEM = Integer.parseInt(KasuhaEM);
                 bmanager.BannitATK = Integer.parseInt(BannitATK);
                 float reaction = Float.parseFloat(reac);
+                float Levelf = Float.parseFloat(Level);
+                float Resisf = Float.parseFloat(Resis);
 
                 renewCharaCondition(manager, bmanager);
-
-                //测试60级散兵伤害
-                float DMG = Calculator.DmgCalculate(chara, -1.4f, reaction, 0, 60);
-                TextField dmgField = new TextField("核爆: " + DMG);
-                gbcb.gridx = 6;
-                gbcb.gridy = 9;
-                if(currentDmgField != null) BonusPanel.remove(currentDmgField);
-                currentDmgField = dmgField;
-                addbon(dmgField); 
-                BonusPanel.validate();
+                DmgUI(reaction, Levelf, Resisf);
 
             }
         };
@@ -753,16 +816,51 @@ public class UIFrame{
         chectbutton.addActionListener(listener);
         addbon(chectbutton);
         
-        
-
-
-
-
-
-
         BonusPanel.setVisible(true);
         return BonusPanel;
 
 
+    }
+
+    public void  DmgUI(float reaction, float level, float Resis){
+        if(dmgPanel != null) fr.remove(dmgPanel);
+
+        dmgPanel = new Panel();
+        dmgPanel.setLayout(gbl);
+
+        Label lb1 = new Label("60级散兵伤害");
+        Label lb2 = new Label("敌人受到伤害");
+        lb2.setFont(new Font("L", 1, 12));
+        
+        //创建散兵的伤害
+        float sbDMG = Calculator.DmgCalculate(chara, -1.4f, reaction, 0, 60);
+        TextField t1 = new TextField(String.valueOf(sbDMG));
+
+        //创建小怪的伤害
+        System.out.println("....抗性为"+Resis);
+        float xgDMG = Calculator.DmgCalculate(chara, Resis, reaction, 0, level);
+        TextField t2 = new TextField(String.valueOf(xgDMG));
+        t2.setFont(new Font("B", 1, 12));
+        t2.setForeground(Color.red);
+
+
+
+        gbcd.fill = GridBagConstraints.REMAINDER;
+        gbcd.gridx = 0;
+        gbcd.gridy = 0;
+        adddmg(lb1);
+        gbcd.gridx = 1;
+        adddmg(t1);
+        gbcd.gridx = 0;
+        gbcd.gridy = 1;
+        adddmg(lb2);
+        gbcd.gridx = 1;
+        adddmg(t2);
+
+        gbcALL.gridx = 0;
+        gbcALL.gridy = 2;
+        addMain(dmgPanel);
+        fr.validate();
+        fr.pack();
     }
 }

@@ -23,6 +23,10 @@ public class Calculator {
 
         //精通乘区 reac_coe 为增幅反应倍率 addi为反应额外增伤，如魔女套
         float ELE_coe = reac_coe *( 1 + (chara.ele_mastery * 2.78f)/(chara.ele_mastery + 1400) + addiRec_coe);
+        //如果输入倍率为1则没有元素反应加伤
+        if(reac_coe == 1){
+            ELE_coe = 1;
+        }
         System.out.println("精通乘区 "+ ELE_coe);
 
         //抗性区

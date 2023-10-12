@@ -1,5 +1,6 @@
 package impl;
 
+import java.awt.Frame;
 import java.io.IOException;
 
 import Charactersfolder.Hutao;
@@ -9,8 +10,7 @@ import Weaponsfolder.Humo;
 public class Main {
     static Artifacts art1;
     public static void main(String[] args) throws IOException{
-        System.out.println("test push");
-        
+        System.out.println("Creat a new artifact");
         ArtifactManager manager = new ArtifactManager();
 
 

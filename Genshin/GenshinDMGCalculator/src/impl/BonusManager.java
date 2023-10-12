@@ -10,7 +10,8 @@ public class BonusManager {
 
     //队友
     public String[] bonusTeamSkills = {"BannitC6_PyroDMG", "SucroseEM_50", "SucroseEM_Skill", "KasuhaSkill",
-                                        "Dragon","MonaQ","SucroseC6","BannitQ","Dreams","Instructor","Oblige","Venerer"};
+                                        "Dragon","MonaQ","SucroseC6","BannitQ","Dreams","Instructor","Oblige","Venerer",
+                                        "Zhongli_E","Yelan_Q"};
     public boolean[] bonusTeamSkillTick = new boolean[20];
 
     //角色/武器技能
@@ -41,6 +42,10 @@ public class BonusManager {
             case "DoubleHydro":
                 if(!bonusTeamTick[1]) {bonusTeamTick[1] = true; System.out.println("HydroBUFF ON");}
                 else {bonusTeamTick[1] = false; System.out.println("HydroBUFF OFF");}
+                break;
+            case "DoubleGeo":
+                if(!bonusTeamTick[2]) {bonusTeamTick[2] = true; System.out.println("HydroBUFF ON");}
+                else {bonusTeamTick[2] = false; System.out.println("HydroBUFF OFF");}
                 break;
             case "BannitC6_PyroDMG":
                 if(!bonusTeamSkillTick[0]) {bonusTeamSkillTick[0] = true; System.out.println("BannitC6_PyroDMG ON");}
@@ -86,6 +91,18 @@ public class BonusManager {
                 if(!bonusTeamSkillTick[10]) {bonusTeamSkillTick[10] = true; System.out.println("Oblige ON");}
                 else {bonusTeamSkillTick[10] = false; System.out.println("Oblige OFF");}
                 break;
+            case "Venerer":
+                if(!bonusTeamSkillTick[11]) {bonusTeamSkillTick[11] = true; System.out.println("Venerer ON");}
+                else {bonusTeamSkillTick[11] = false; System.out.println("Venerer OFF");}
+                break;
+            case "Zhongli_E":
+                if(!bonusTeamSkillTick[12]) {bonusTeamSkillTick[12] = true; System.out.println("Zhongli_e ON");}
+                else {bonusTeamSkillTick[12] = false; System.out.println("Zhongli_e OFF");}
+                break;
+            case "Yelan_Q":
+                if(!bonusTeamSkillTick[13]) {bonusTeamSkillTick[13] = true; System.out.println("Yelan_Q ON");}
+                else {bonusTeamSkillTick[13] = false; System.out.println("Yelan_Q OFF");}
+                break;
             case "Chara_e":
                 if(!charaSkillsTicks[0]) {charaSkillsTicks[0] = true; System.out.println("Chara_e ON");}
                 else {charaSkillsTicks[0] = false; System.out.println("Chara_e OFF");}
@@ -130,10 +147,7 @@ public class BonusManager {
                 if(!artifactTick[3]) {artifactTick[3] = true; System.out.println("20%HP ON");}
                 else {artifactTick[3] = false; System.out.println("20%HP OFF");}
                 break;
-            case "Venerer":
-                if(!bonusTeamSkillTick[11]) {bonusTeamSkillTick[11] = true; System.out.println("Venerer ON");}
-                else {bonusTeamSkillTick[11] = false; System.out.println("Venerer OFF");}
-                break;
+
         
             }
     }
@@ -146,6 +160,10 @@ public class BonusManager {
         if(bonusTeamTick[1]){
             System.out.println("已经添加双水");
             chara.hp_bonusSPC += chara.BasicHP*0.25;
+        }
+        if(bonusTeamTick[2]){
+            System.out.println("已经添加双岩");
+            chara.ele_bonus += 0.15f;
         }
 
         //队友天赋加成
@@ -206,7 +224,17 @@ public class BonusManager {
 
         if(bonusTeamSkillTick[11]){
             System.out.println("风套减抗");
-            chara.Resistance_reduction = -0.4f;
+            chara.Resistance_reduction += -0.4f;
+        }
+
+        if(bonusTeamSkillTick[12]){
+            System.out.println("钟离减抗");
+            chara.Resistance_reduction = -0.2f;
+        }
+
+        if(bonusTeamSkillTick[13]){
+            System.out.println("夜兰增伤");
+            chara.ele_bonus += 0.5;
         }
 
         if(charaSkillsTicks[2]){

@@ -10,7 +10,7 @@ public class Hutao extends Characters{
     public static float BasicATK = 107;
     public static float BasicHP = 15552;
     public static float BasicCRIT_Rate = 0.05f;
-    public static float BasicCRIT_DMG = 0.88f;
+    public static float BasicCRIT_DMG = 0.884f;
 
     //初始化胡桃的时候绑定圣遗物
     public Hutao(Artifacts arts[], Weapon wep){

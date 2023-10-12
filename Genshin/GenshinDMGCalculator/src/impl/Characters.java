@@ -58,7 +58,7 @@ public class Characters {
 
 
         //创建变量储存圣遗物总数据 后续可以做成返回输出展示
-        float HPper = 0, HPnum = 0, ATK_bper = 0, ATK_bnum = 0, EM = 0, CR = 0, CD = 0, ELE_bonus = 0;
+        float HPper = 0, HPnum = 0, ATK_bper = 0, ATK_bnum = 0, DEF_bnum = 0, DEF_bper = 0, EM = 0, REC = 0, CR = 0, CD = 0, ELE_bonus = 0;
         
         
 
@@ -68,9 +68,12 @@ public class Characters {
             HPnum += arts[i].HP_bn;
             ATK_bper += arts[i].ATK_bp;
             ATK_bnum += arts[i].ATK_bn;
+            DEF_bper += arts[i].DEF_bp;
+            DEF_bnum += arts[i].DEF_bn;
             EM += arts[i].EM;
             CR += arts[i].CR_R;
             CD += arts[i].CR_D;
+            REC += arts[i].Rec;
             ELE_bonus += arts[i].ELE_bonus;
         }
 
